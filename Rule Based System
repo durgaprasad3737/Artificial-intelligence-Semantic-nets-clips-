@@ -1,1 +1,98 @@
+====>       Rule Based Systems
 
+Q): This is a semantic net question, where we represent supersets, subsets and the relations between them as code. We will use the CLIPS IDE to do this.
+
+CLIPS can be downloaded from https://clipsrules.sourceforge.net.
+
+## Tasks
+
+1. Get CLIPS running. It's on https://clipsrules.sourceforge.net. Go to Download; I got CLIPS 6.4.2.
+2. Run it, and you get the CLIPS shell.
+3. Assert some facts: `(assert (duck))`, then `(facts)`.
+4. Make some rules. Open up a file and write `(defrule bob (duck) => (assert (chicken)))`. Load it in and run.
+5. Now make some assertions that define a hierarchy of mammals. You can do it in a variety of ways, but I used facts that looked like `(isa canine mammal)`.
+6. Make sure that you have some grandchild nodes, like `(isa wolf canine)`.
+7. Make a rule which expands the `isa` relation. In my case it added the fact `(isa wolf mammal)`.
+8. Now add some feature facts, for example `(feature blood mammal warm)`. Only add them in the appropriate place in the hierarchy (don't also say `(feature blood canine warm)`).
+9. Now add a rule which exploits the `isa` relations to put these facts in.
+10. If you haven't already done so, add an initial rule that puts your basic facts in the system, reset and see what you get. You should also save your rules into a `.clp` file, clear, reset, load the file, run and see what you get.
+11. Now implement overriding inheritance. For instance, by default mammals travel by walking, but bats do not. I did this by modifying my feature inheritance rule.
+12. Now add enough nodes so that it expands to over 100 facts. (I did it with 20 facts, but I'm sure I could have used fewer.)
+
+sol:
+
+(deffacts animal-kingdom
+   (mammals)
+
+   (isa mammal animal)
+   (isa bird animal)
+   (isa canine mammal)
+   (isa bat mammal)
+   (isa whale mammal)
+   (isa dog canine)
+   (isa wolf canine)
+   (isa german-shepherd dog)
+   (isa penguin bird)
+
+   (feature blood mammal warm)
+   (feature blood bird warm)
+   (feature covering mammal hair)
+   (feature covering bird feathers)
+   (feature movement mammal walk)
+   (feature movement bat fly)
+   (feature movement whale swim)
+   (feature movement bird fly)
+   (feature movement penguin swim)
+
+   (instance oscar german-shepherd)
+   (instance pingu penguin)
+   
+   (subclasses canine)
+   (features oscar)
+)
+(defrule expand-isa
+   (isa ?child ?parent)
+   (isa ?parent ?grandparent)
+   =>
+   (assert (isa ?child ?grandparent)))
+
+(defrule expand-instance
+   (instance ?instance-name ?class-name)
+   (isa ?class-name ?ancestor)
+   =>
+   (assert (instance ?instance-name ?ancestor)))
+
+(defrule inherit-feature
+   (isa ?child ?parent)
+   (feature ?feature-name ?parent ?feature-value)
+   (not (feature ?feature-name ?child ?child-value))
+   (not (and (isa ?child ?middle)
+             (isa ?middle ?parent)
+             (feature ?feature-name ?middle ?middle-value)))
+   =>
+   (assert (feature ?feature-name ?child ?feature-value)))
+
+(defrule inherit-feature-instance
+   (instance ?instance-name ?class-name)
+   (feature ?feature-name ?class-name ?feature-value)
+   (not (feature ?feature-name ?instance-name ?instance-value))
+   (not (and (instance ?instance-name ?middle)
+             (isa ?middle ?class-name)
+             (feature ?feature-name ?middle ?middle-value)))
+   =>
+   (assert (feature ?feature-name ?instance-name ?feature-value)))
+
+(defrule print-subclasses
+   (subclasses ?animal)
+   (isa ?subclass ?animal)
+   =>
+   (printout t ?subclass " is a kind of " ?animal crlf))
+
+(defrule print-features
+   (features ?animal)
+   (feature ?feature-name ?animal ?feature-value)
+   =>
+   (printout t ?animal " = " ?feature-name "= " ?feature-value crlf))
+------------------------------------------------------------------------
+
+this is the code and the to run  it first we will see facts then reset then run  it and u can add and remove anyhting u like in the code and also the i have mentioned below how the defrul deffacts and assert works and how to majke them run and what will be the correct way to save it and run 
