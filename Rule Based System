@@ -95,4 +95,12 @@ sol:
    (printout t ?animal " = " ?feature-name "= " ?feature-value crlf))
 ------------------------------------------------------------------------
 
-this is the code and the to run  it first we will see facts then reset then run  it and u can add and remove anyhting u like in the code and also the i have mentioned below how the defrul deffacts and assert works and how to majke them run and what will be the correct way to save it and run 
+This is the code and how to run it. First we check the facts, then reset, then run. You can add or remove anything you like in the code.
+## How to run
+
+1. Load the file: `(load "jj.clp")`
+2. Check the facts: `(facts)`
+3. Reset: `(reset)`
+4. Run: `(run)`
+
+You can add or remove anything you like in the code.
